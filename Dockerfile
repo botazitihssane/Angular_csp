@@ -2,22 +2,23 @@ FROM node:20.15.1-slim AS build
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
+COPY package.json package-lock.json ./
 
-RUN yarn install
+RUN npm install
 
 COPY . .
 
-RUN yarn global add @angular/cli && \
-    ng build --configuration=production --output-path=dist/angular-csp/browser
+RUN npm run build
 
-RUN ls -R /app/dist
+FROM nginx:alpine
 
-FROM nginx:stable-alpine
+RUN rm /etc/nginx/conf.d/default.conf
 
-COPY --from=build /app/dist /usr/share/nginx/html
-COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+
+COPY --from=build /app/dist/angular-csp/browser /usr/share/nginx/html
 
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
+

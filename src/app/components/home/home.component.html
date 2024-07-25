@@ -1,1 +1,15 @@
-<p> Just testing the home component </p>
+<p>Just testing the home component</p>
+<div *ngIf="candidate">
+  <h2>Candidate Details</h2>
+  <p><strong>Email:</strong> {{ candidate.email }}</p>
+  <p><strong>First Name:</strong> {{ candidate.firstName }}</p>
+  <p><strong>Last Name:</strong> {{ candidate.lastName }}</p>
+</div>
+
+<div *ngIf="!candidate && !error">
+  Loading candidate details...
+</div>
+
+<div *ngIf="error">
+  {{ error }}
+</div>
